@@ -1,124 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>FTE Calculator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 20px;
-    }
+    <meta charset="UTF-8">
+    <title>FTE Calculator</title>
 
-    .calculator {
-      background: #ffffff;
-      padding: 20px;
-      max-width: 500px;
-      margin: auto;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f3f5f7;
+            margin: 0;
+            padding: 20px;
+        }
 
-    h1 {
-      text-align: center;
-    }
+        .calculator {
+            background: #ffffff;
+            max-width: 520px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
 
-    label {
-      display: block;
-      margin-top: 12px;
-      font-weight: bold;
-    }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #003a8f;
+        }
 
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 4px;
-    }
+        label {
+            display: block;
+            margin-top: 14px;
+            font-weight: 600;
+            color: #333;
+        }
 
-    .results {
-      margin-top: 20px;
-      padding: 15px;
-      background: #eef3f7;
-      border-radius: 6px;
-    }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #bbb;
+            font-size: 15px;
+        }
 
-    .results p {
-      margin: 6px 0;
-    }
+        button {
+            margin-top: 22px;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
 
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      background: #0078d4;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+        button:hover {
+            background: #005ea3;
+        }
 
-    button:hover {
-      background: #005ea3;
-    }
-  </style>
+        /* ===== RESULTS HIGHLIGHT ===== */
+
+        .results {
+            margin-top: 28px;
+            padding: 22px;
+            background: linear-gradient(135deg, #eef4ff, #dce9ff);
+            border-radius: 12px;
+            box-shadow: inset 0 0 0 2px #b8d0ff;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #c8d9ff;
+            font-size: 16px;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #333;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #003a8f;
+        }
+
+        .fte-highlight {
+            margin-top: 18px;
+            padding: 18px;
+            background: #0078d4;
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .fte-highlight h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .fte-highlight span {
+            display: block;
+            font-size: 38px;
+            font-weight: bold;
+            margin-top: 6px;
+        }
+
+        .note {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #555;
+            text-align: center;
+        }
+    </style>
 </head>
+
 <body>
 
 <div class="calculator">
-  <h1>FTE Calculator</h1>
+    <h1>FTE Calculator</h1>
 
-  <label># of Resources</label>
-  <input type="number" id="resources" value="10">
+    <label># of Resources</label>
+    <input type="number" id="resources" value="10">
 
-  <label># of Vacation Days (All Team)</label>
-  <input type="number" id="vacations" value="10">
+    <label># of Vacation Days (All Team)</label>
+    <input type="number" id="vacations" value="10">
 
-  <label># of Holidays</label>
-  <input type="number" id="holidays" value="2">
+    <label># of Holidays</label>
+    <input type="number" id="holidays" value="2">
 
-  <label># of Absence Days (All Team)</label>
-  <input type="number" id="absences" value="30">
+    <label># of Absence Days (All Team)</label>
+    <input type="number" id="absences" value="30">
 
-  <button onclick="calculateFTE()">Calculate</button>
+    <button onclick="calculateFTE()">Calculate FTE</button>
 
-  <div class="results">
-    <p><strong>Gross Quarterly Hours:</strong> <span id="grossHours">0</span></p>
-    <p><strong>Total Non‑Working Hours:</strong> <span id="nonWorking">0</span></p>
-    <p><strong>Net Available Hours:</strong> <span id="netHours">0</span></p>
-    <p><strong>Total FTE:</strong> <span id="fte">0</span></p>
-  </div>
+    <div class="results">
+        <div class="result-item">
+            <span class="result-label">Gross Quarterly Hours</span>
+            <span class="result-value" id="grossHours">0</span>
+        </div>
+
+        <div class="result-item">
+            <span class="result-label">Total Non‑Working Hours</span>
+            <span class="result-value" id="nonWorking">0</span>
+        </div>
+
+        <div class="result-item">
+            <span class="result-label">Net Available Hours</span>
+            <span class="result-value" id="netHours">0</span>
+        </div>
+
+        <div class="fte-highlight">
+            <h2>Total FTE in Team</h2>
+            <span id="fte">0.00</span>
+        </div>
+    </div>
+
+    <div class="note">
+        Assumption: 1 FTE = 480 quarterly hours (8h/day)
+    </div>
 </div>
 
 <script>
 function calculateFTE() {
-  const resources = Number(document.getElementById("resources").value);
-  const vacations = Number(document.getElementById("vacations").value);
-  const holidays = Number(document.getElementById("holidays").value);
-  const absences = Number(document.getElementById("absences").value);
+    const resources = Number(document.getElementById("resources").value);
+    const vacations = Number(document.getElementById("vacations").value);
+    const holidays = Number(document.getElementById("holidays").value);
+    const absences = Number(document.getElementById("absences").value);
 
-  const HOURS_PER_DAY = 8;
-  const QUARTER_HOURS_PER_PERSON = 480;
+    const HOURS_PER_DAY = 8;
+    const QUARTER_HOURS_PER_PERSON = 480;
 
-  const grossHours = resources * QUARTER_HOURS_PER_PERSON;
+    const grossHours = resources * QUARTER_HOURS_PER_PERSON;
 
-  const vacationHours = vacations * HOURS_PER_DAY;
-  const holidayHours = holidays * HOURS_PER_DAY;
-  const absenceHours = absences * HOURS_PER_DAY;
+    const vacationHours = vacations * HOURS_PER_DAY;
+    const holidayHours = holidays * HOURS_PER_DAY;
+    const absenceHours = absences * HOURS_PER_DAY;
 
-  const nonWorkingHours = vacationHours + holidayHours + absenceHours;
-  const netHours = grossHours - nonWorkingHours;
+    const nonWorkingHours = vacationHours + holidayHours + absenceHours;
+    const netHours = grossHours - nonWorkingHours;
+    const fte = netHours / QUARTER_HOURS_PER_PERSON;
 
-  const fte = netHours / QUARTER_HOURS_PER_PERSON;
-
-  document.getElementById("grossHours").textContent = grossHours;
-  document.getElementById("nonWorking").textContent = nonWorkingHours;
-  document.getElementById("netHours").textContent = netHours;
-  document.getElementById("fte").textContent = fte.toFixed(2);
+    document.getElementById("grossHours").textContent = grossHours;
+    document.getElementById("nonWorking").textContent = nonWorkingHours;
+    document.getElementById("netHours").textContent = netHours;
+    document.getElementById("fte").textContent = fte.toFixed(2);
 }
 
-// Initial calculation on load
+// Auto-calculate on page load
 calculateFTE();
 </script>
 

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FTE Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .calculator {
+            width: 420px;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        label {
+            font-size: 14px;
+        }
+
+        input {
+            width: 80px;
+            padding: 6px;
+            text-align: right;
+        }
+
+        .value {
+            font-weight: bold;
+        }
+
+        .divider {
+            margin: 15px 0;
+            border-top: 1px solid #ddd;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            border: none;
+            border-radius: 6px;
+            background: #0078d4;
+            color: #fff;
+            cursor: pointer;
+            margin: 15px 0;
+        }
+
+        button:hover {
+            background: #005ea6;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <h2>FTE Calculator</h2>
+
+    <div class="row">
+        <label>Gross Quarterly Hours</label>
+        <span class="value">480</span>
+    </div>
+
+    <div class="row">
+        <label>Nº of vacations (days)</label>
+        <input type="number" id="vacations" value="10" min="0" oninput="calculateFTE()">
+    </div>
+
+    <div class="row">
+        <label>Nº of holidays (days)</label>
+        <input type="number" id="holidays" value="2" min="0" oninput="calculateFTE()">
+    </div>
+
+    <div class="row">
+        <label>Nº of other absences (days)</label>
+        <input type="number" id="absences" value="0" min="0" oninput="calculateFTE()">
+    </div>
+
+    <!-- ✅ IMPORTANT FIX: type="button" -->
+    <button type="button" onclick="calculateFTE()">Calculate</button>
+
+    <div class="divider"></div>
+
+    <div class="row">
+        <label>Total non‑working hours</label>
+        <span id="nonWorking" class="value">0</span>
+    </div>
+
+    <div class="row">
+        <label>Net available hours</label>
+        <span id="netHours" class="value">0</span>
+    </div>
+
+    <div class="row">
+        <label>FTE</label>
+        <span id="fte" class="value">0.00</span>
+    </div>
+
+    <div class="note">
+        Instructions: Fill in the white fields with your data
+    </div>
+</div>
+
+<script>
+    const HOURS_PER_DAY = 8;
+    const GROSS_HOURS = 480;
+
+    function calculateFTE() {
+        const vacations = Number(document.getElementById("vacations").value) || 0;
+        const holidays = Number(document.getElementById("holidays").value) || 0;
+        const absences = Number(document.getElementById("absences").value) || 0;
+
+        const totalNonWorkingHours =
+            (vacations + holidays + absences) * HOURS_PER_DAY;
+
+        const netAvailableHours =
+            GROSS_HOURS - totalNonWorkingHours;
+
+        const fte =
+            netAvailableHours / GROSS_HOURS;
+
+        document.getElementById("nonWorking").textContent =
+            totalNonWorkingHours.toFixed(0);
+
+        document.getElementById("netHours").textContent =
+            netAvailableHours.toFixed(0);
+
+        document.getElementById("fte").textContent =
+            fte.toFixed(2);
+    }
+
+    // Initial calculation
+    calculateFTE();
+</script>
+
+</body>
+</html>

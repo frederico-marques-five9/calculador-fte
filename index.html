@@ -1,160 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>FTE Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+  <meta charset="UTF-8">
+  <title>FTE Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
 
-        .calculator {
-            width: 420px;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
+    .calculator {
+      background: #ffffff;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-        }
+    h1 {
+      text-align: center;
+    }
 
-        .row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
 
-        label {
-            font-size: 14px;
-        }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+    }
 
-        input {
-            width: 80px;
-            padding: 6px;
-            text-align: right;
-        }
+    .results {
+      margin-top: 20px;
+      padding: 15px;
+      background: #eef3f7;
+      border-radius: 6px;
+    }
 
-        .value {
-            font-weight: bold;
-        }
+    .results p {
+      margin: 6px 0;
+    }
 
-        .divider {
-            margin: 15px 0;
-            border-top: 1px solid #ddd;
-        }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background: #0078d4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
 
-        button {
-            width: 100%;
-            padding: 10px;
-            font-size: 15px;
-            border: none;
-            border-radius: 6px;
-            background: #0078d4;
-            color: #fff;
-            cursor: pointer;
-            margin: 15px 0;
-        }
-
-        button:hover {
-            background: #005ea6;
-        }
-
-        .note {
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-        }
-    </style>
+    button:hover {
+      background: #005ea3;
+    }
+  </style>
 </head>
 <body>
 
 <div class="calculator">
-    <h2>FTE Calculator</h2>
+  <h1>FTE Calculator</h1>
 
-    <div class="row">
-        <label>Gross Quarterly Hours</label>
-        <span class="value">480</span>
-    </div>
+  <label># of Resources</label>
+  <input type="number" id="resources" value="10">
 
-    <div class="row">
-        <label>Nº of vacations (days)</label>
-        <input type="number" id="vacations" value="10" min="0" oninput="calculateFTE()">
-    </div>
+  <label># of Vacation Days (All Team)</label>
+  <input type="number" id="vacations" value="10">
 
-    <div class="row">
-        <label>Nº of holidays (days)</label>
-        <input type="number" id="holidays" value="2" min="0" oninput="calculateFTE()">
-    </div>
+  <label># of Holidays</label>
+  <input type="number" id="holidays" value="2">
 
-    <div class="row">
-        <label>Nº of other absences (days)</label>
-        <input type="number" id="absences" value="0" min="0" oninput="calculateFTE()">
-    </div>
+  <label># of Absence Days (All Team)</label>
+  <input type="number" id="absences" value="30">
 
-    <!-- ✅ IMPORTANT FIX: type="button" -->
-    <button type="button" onclick="calculateFTE()">Calculate</button>
+  <button onclick="calculateFTE()">Calculate</button>
 
-    <div class="divider"></div>
-
-    <div class="row">
-        <label>Total non‑working hours</label>
-        <span id="nonWorking" class="value">0</span>
-    </div>
-
-    <div class="row">
-        <label>Net available hours</label>
-        <span id="netHours" class="value">0</span>
-    </div>
-
-    <div class="row">
-        <label>FTE</label>
-        <span id="fte" class="value">0.00</span>
-    </div>
-
-    <div class="note">
-        Instructions: Fill in the white fields with your data
-    </div>
+  <div class="results">
+    <p><strong>Gross Quarterly Hours:</strong> <span id="grossHours">0</span></p>
+    <p><strong>Total Non‑Working Hours:</strong> <span id="nonWorking">0</span></p>
+    <p><strong>Net Available Hours:</strong> <span id="netHours">0</span></p>
+    <p><strong>Total FTE:</strong> <span id="fte">0</span></p>
+  </div>
 </div>
 
 <script>
-    const HOURS_PER_DAY = 8;
-    const GROSS_HOURS = 480;
+function calculateFTE() {
+  const resources = Number(document.getElementById("resources").value);
+  const vacations = Number(document.getElementById("vacations").value);
+  const holidays = Number(document.getElementById("holidays").value);
+  const absences = Number(document.getElementById("absences").value);
 
-    function calculateFTE() {
-        const vacations = Number(document.getElementById("vacations").value) || 0;
-        const holidays = Number(document.getElementById("holidays").value) || 0;
-        const absences = Number(document.getElementById("absences").value) || 0;
+  const HOURS_PER_DAY = 8;
+  const QUARTER_HOURS_PER_PERSON = 480;
 
-        const totalNonWorkingHours =
-            (vacations + holidays + absences) * HOURS_PER_DAY;
+  const grossHours = resources * QUARTER_HOURS_PER_PERSON;
 
-        const netAvailableHours =
-            GROSS_HOURS - totalNonWorkingHours;
+  const vacationHours = vacations * HOURS_PER_DAY;
+  const holidayHours = holidays * HOURS_PER_DAY;
+  const absenceHours = absences * HOURS_PER_DAY;
 
-        const fte =
-            netAvailableHours / GROSS_HOURS;
+  const nonWorkingHours = vacationHours + holidayHours + absenceHours;
+  const netHours = grossHours - nonWorkingHours;
 
-        document.getElementById("nonWorking").textContent =
-            totalNonWorkingHours.toFixed(0);
+  const fte = netHours / QUARTER_HOURS_PER_PERSON;
 
-        document.getElementById("netHours").textContent =
-            netAvailableHours.toFixed(0);
+  document.getElementById("grossHours").textContent = grossHours;
+  document.getElementById("nonWorking").textContent = nonWorkingHours;
+  document.getElementById("netHours").textContent = netHours;
+  document.getElementById("fte").textContent = fte.toFixed(2);
+}
 
-        document.getElementById("fte").textContent =
-            fte.toFixed(2);
-    }
-
-    // Initial calculation
-    calculateFTE();
+// Initial calculation on load
+calculateFTE();
 </script>
 
 </body>

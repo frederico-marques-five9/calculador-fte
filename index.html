@@ -1,203 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>FTE Calculator</title>
+<meta charset="UTF-8">
+<title>FTE Capacity Calculator</title>
 
-    <style>
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: #f3f5f7;
-            margin: 0;
-            padding: 20px;
-        }
+<style>
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f3f5f7;
+    padding: 20px;
+}
 
-        .calculator {
-            background: #ffffff;
-            max-width: 520px;
-            margin: auto;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-        }
+.calculator {
+    background: #ffffff;
+    max-width: 860px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #003a8f;
-        }
+h1 {
+    text-align: center;
+    color: #003a8f;
+}
 
-        label {
-            display: block;
-            margin-top: 14px;
-            font-weight: 600;
-            color: #333;
-        }
+h2 {
+    margin-top: 28px;
+    color: #005ea3;
+    border-bottom: 2px solid #e1ecff;
+    padding-bottom: 6px;
+}
 
-        input {
-            width: stretch;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 6px;
-            border: 1px solid #bbb;
-            font-size: 15px;
-        }
+/* Inputs */
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: 600;
+}
 
-        button {
-            margin-top: 22px;
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            background: #0078d4;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+input {
+    width: 100%;
+    padding: 9px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+}
 
-        button:hover {
-            background: #005ea3;
-        }
+button {
+    margin-top: 24px;
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    background: #0078d4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
 
-        /* ===== RESULTS HIGHLIGHT ===== */
+/* Panels */
+.results {
+    margin-top: 16px;
+    padding: 18px;
+    border-radius: 12px;
+}
 
-        .results {
-            margin-top: 28px;
-            padding: 22px;
-            background: linear-gradient(135deg, #eef4ff, #dce9ff);
-            border-radius: 12px;
-            box-shadow: inset 0 0 0 2px #b8d0ff;
-        }
+.blue  { background: #eef4ff; border: 2px solid #b8d0ff; }
+.green { background: #e9f7ee; border: 2px solid #9fddb6; }
+.amber { background: #fff8e6; border: 2px solid #ffd88a; }
 
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #c8d9ff;
-            font-size: 16px;
-        }
+.row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-weight: 600;
+}
 
-        .result-item:last-child {
-            border-bottom: none;
-        }
+/* Highlight */
+.highlight {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+}
 
-        .result-label {
-            color: #333;
-        }
+.highlight.blue { background: #0078d4; }
+.highlight.green { background: #2e8b57; }
 
-        .result-value {
-            font-weight: bold;
-            color: #003a8f;
-        }
+.highlight span {
+    display: block;
+    font-size: 34px;
+    font-weight: bold;
+}
 
-        .fte-highlight {
-            margin-top: 18px;
-            padding: 18px;
-            background: #0078d4;
-            color: white;
-            border-radius: 10px;
-            text-align: center;
-        }
+/* Allocation grid */
+.alloc-header,
+.alloc-row {
+    display: grid;
+    grid-template-columns: 1fr 140px 120px;
+    gap: 16px;
+    align-items: center;
+}
 
-        .fte-highlight h2 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: normal;
-            opacity: 0.9;
-        }
+.alloc-header {
+    font-weight: 700;
+    border-bottom: 2px solid #9fddb6;
+    padding-bottom: 8px;
+    margin-bottom: 6px;
+    text-align: center;
+}
 
-        .fte-highlight span {
-            display: block;
-            font-size: 38px;
-            font-weight: bold;
-            margin-top: 6px;
-        }
+.alloc-header span:first-child { text-align: left; }
 
-        .note {
-            margin-top: 15px;
-            font-size: 13px;
-            color: #555;
-            text-align: center;
-        }
-    </style>
+.alloc-row strong { text-align: left; }
+
+.alloc-row input {
+    width: 80px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.alloc-value {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Error */
+.error {
+    margin-top: 12px;
+    padding: 10px;
+    background: #fde7e9;
+    border: 2px solid #d13438;
+    color: #a4262c;
+    border-radius: 8px;
+    font-weight: 600;
+    display: none;
+}
+
+/* Notes */
+.note {
+    margin-top: 18px;
+    font-size: 13px;
+    text-align: center;
+    color: #555;
+}
+</style>
 </head>
 
 <body>
 
 <div class="calculator">
-    <h1>FTE Calculator</h1>
+<h1>FTE Capacity Calculator</h1>
 
-    <label># of Resources</label>
-    <input type="number" id="resources" value="10">
+<h2>Team Inputs (Quarter)</h2>
+<label># of Resources</label>
+<input id="resources" type="number" value="10">
 
-    <label># of Vacation Days (All Team)</label>
-    <input type="number" id="vacations" value="10">
+<label># of Vacation Days (All Team)</label>
+<input id="vacations" type="number" value="10">
 
-    <label># of Holidays</label>
-    <input type="number" id="holidays" value="2">
+<label># of Holidays</label>
+<input id="holidays" type="number" value="2">
 
-    <label># of Absence Days (All Team)</label>
-    <input type="number" id="absences" value="30">
+<label># of Absence Days (All Team)</label>
+<input id="absences" type="number" value="30">
 
-    <button onclick="calculateFTE()">Calculate FTE</button>
+<h2>Sprint Setup</h2>
+<label># of Sprints in the Quarter</label>
+<input id="sprints" type="number" value="6">
 
-    <div class="results">
-        <div class="result-item">
-            <span class="result-label">Gross Quarterly Hours</span>
-            <span class="result-value" id="grossHours">0</span>
-        </div>
+<button onclick="calculate()">Calculate Capacity</button>
 
-        <div class="result-item">
-            <span class="result-label">Total Non‑Working Hours</span>
-            <span class="result-value" id="nonWorking">0</span>
-        </div>
-
-        <div class="result-item">
-            <span class="result-label">Net Available Hours</span>
-            <span class="result-value" id="netHours">0</span>
-        </div>
-
-        <div class="fte-highlight">
-            <h2>Total FTE in Team</h2>
-            <span id="fte">0.00</span>
-        </div>
+<!-- Quarterly Capacity -->
+<h2>Quarterly Capacity View</h2>
+<div class="results blue">
+    <div class="row">
+        <span>Net Available Hours</span>
+        <span id="netHours">0</span>
     </div>
-
-    <div class="note">
-        Assumption: 1 FTE = 480 quarterly hours (8h/day)
+    <div class="highlight blue">
+        Total FTE (Quarter)
+        <span id="fteQuarter">0.00</span>
     </div>
 </div>
 
+<!-- Allocation -->
+<h2>Quarterly FTE Allocation</h2>
+<div class="results green">
+    <div class="alloc-header">
+        <span></span>
+        <span>Allocation %</span>
+        <span>FTE</span>
+    </div>
+
+    <div class="alloc-row">
+        <strong>RTB</strong>
+        <input id="rtbPct" type="number" value="50">
+        <span class="alloc-value" id="rtbFte">0.00</span>
+    </div>
+
+    <div class="alloc-row">
+        <strong>Quarter Commits</strong>
+        <input id="qcPct" type="number" value="50">
+        <span class="alloc-value" id="qcFte">0.00</span>
+    </div>
+
+    <div class="error" id="allocationError">
+        Allocation percentages must not exceed 100%.
+    </div>
+</div>
+
+<!-- Buffer -->
+<h2>Capacity Buffer</h2>
+<div class="results amber">
+    <div class="alloc-row">
+        <strong>Capacity Buffer %</strong>
+        <input id="bufferPct" type="number" value="10">
+        <span class="alloc-value" id="bufferFte">0.00</span>
+    </div>
+</div>
+
+<!-- Sprint View -->
+<h2>Quarter Commits – Sprint Capacity View</h2>
+<div class="results green">
+    <div class="row">
+        <span>Avg Hours per Sprint (Net)</span>
+        <span id="qcHoursSprint">0</span>
+    </div>
+    <div class="highlight green">
+        Effective FTE per Sprint (Net)
+        <span id="qcFteSprint">0.00</span>
+    </div>
+</div>
+
+<div class="note">
+    Assumptions: 1 FTE = 480h / quarter · 80h / sprint · 8h / day
+</div>
+</div>
+
 <script>
-function calculateFTE() {
+function calculate() {
     const resources = Number(document.getElementById("resources").value);
     const vacations = Number(document.getElementById("vacations").value);
-    const holidays = Number(document.getElementById("holidays").value);
-    const absences = Number(document.getElementById("absences").value);
+    const holidays  = Number(document.getElementById("holidays").value);
+    const absences  = Number(document.getElementById("absences").value);
+    const sprints   = Number(document.getElementById("sprints").value);
 
-    const HOURS_PER_DAY = 8;
-    const QUARTER_HOURS_PER_PERSON = 480;
+    const rtbPct    = Number(document.getElementById("rtbPct").value);
+    const qcPct     = Number(document.getElementById("qcPct").value);
+    const bufferPct = Number(document.getElementById("bufferPct").value);
 
-    const grossHours = resources * QUARTER_HOURS_PER_PERSON;
+    // Quarterly capacity (always calculate)
+    const netHours = (resources * 480) - ((vacations + holidays + absences) * 8);
+    const totalFte = netHours / 480;
 
-    const vacationHours = vacations * HOURS_PER_DAY;
-    const holidayHours = holidays * HOURS_PER_DAY;
-    const absenceHours = absences * HOURS_PER_DAY;
+    document.getElementById("netHours").textContent   = netHours;
+    document.getElementById("fteQuarter").textContent = totalFte.toFixed(2);
 
-    const nonWorkingHours = vacationHours + holidayHours + absenceHours;
-    const netHours = grossHours - nonWorkingHours;
-    const fte = netHours / QUARTER_HOURS_PER_PERSON;
+    // Allocation validation
+    const totalPct = rtbPct + qcPct;
+    const invalid  = totalPct > 100;
 
-    document.getElementById("grossHours").textContent = grossHours;
-    document.getElementById("nonWorking").textContent = nonWorkingHours;
-    document.getElementById("netHours").textContent = netHours;
-    document.getElementById("fte").textContent = fte.toFixed(2);
+    document.getElementById("allocationError").style.display =
+        invalid ? "block" : "none";
+
+    // Allocation FTEs
+    const rtbFte = invalid ? 0 : totalFte * rtbPct / 100;
+    const qcFte  = invalid ? 0 : totalFte * qcPct  / 100;
+
+    document.getElementById("rtbFte").textContent = rtbFte.toFixed(2);
+    document.getElementById("qcFte").textContent  = qcFte.toFixed(2);
+
+    // Buffer
+    const bufferFte = qcFte * bufferPct / 100;
+    document.getElementById("bufferFte").textContent =
+        bufferFte.toFixed(2);
+
+    // Sprint capacity (net of buffer)
+    const effectiveQcFte = qcFte * (1 - bufferPct / 100);
+    const hoursSprint    = (effectiveQcFte * 480) / sprints;
+    const fteSprint      = hoursSprint / 80;
+
+    document.getElementById("qcHoursSprint").textContent =
+        hoursSprint.toFixed(0);
+
+    document.getElementById("qcFteSprint").textContent =
+        fteSprint.toFixed(2);
 }
 
-// Auto-calculate on page load
-calculateFTE();
+calculate();
 </script>
 
 </body>
